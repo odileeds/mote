@@ -34,7 +34,7 @@ function processLoad(){
 			data: s1,
 			color: '#D60303',
 			points: { show: true, radius: 4 },
-			lines: { show: true ,width: 1 },
+			lines: { show: false ,width: 1 },
 			title: 'LoRaWAN mote',
 			clickable: false,
 			hoverable: true,
