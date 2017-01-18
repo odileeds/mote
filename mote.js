@@ -1,5 +1,4 @@
 var data;
-var dataset = [];
 
 function loadData(d,attr){
 
@@ -17,27 +16,31 @@ function processLoad(){
 
 	if(data && data.length > 0){
 
-		var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-		var series = new Array();
+		var temp = [];
+		var light = [];
+		var s1 = new Array();
+		var s2 = new Array();
 
 		// Assume all the gas and electric points have the same dates for the same rows (may not be true though
 		for(var i = 0; i < data.length ; i++){
-			series.push({x:data[i].date,y:data[i].T,date:data[i].date});
+			if(data[i].date){
+				s1.push({x:data[i].date,y:data[i].T,date:(data[i].date).toISOString()});
+				s2.push({x:data[i].date,y:data[i].L,date:(data[i].date).toISOString()});
+			}
 		}
 
-		dataset.push({
+		temp.push({
 			// Data in the form [{x:x1,y:y1,err:err1},...{x:xn,y:yn,err:errn}]
-			data: series,
-			color: '#000000',
+			data: s1,
+			color: '#D60303',
 			points: { show: true, radius: 4 },
-			lines: { show: true ,width: 0.5 },
+			lines: { show: true ,width: 1 },
 			title: 'LoRaWAN mote',
 			clickable: false,
 			hoverable: true,
 			// Modify the default hover text with replacements
 			hover: {
-				text: '<strong>{{date}}</strong>: {{y}} C',
+				text: 'Temperature: <strong>{{y}}'+parseHTML('&deg;')+'C</strong><br />{{date}}',
 				before: '{{title}}<br />'
 			},
 			css: {
@@ -48,18 +51,47 @@ function processLoad(){
 			  'border-radius': '0px'
 			}
 		})
+		S('#temperature').css({"width":"100%","height":"350px","margin-bottom":"16px"});
+		var graph = $.graph('temperature', temp, {
+			xaxis: { 'label': 'Date/time', 'mode': 'time' },
+			yaxis: { 'label': 'Temperature / '+parseHTML('&deg;')+'C' },
+			zoommode: "x",
+			hoverable: true,
+			grid: { hoverable: true, clickable: true, show: false, background: 'transparent', color: 'rgba(0,0,0,1)', colorZoom: 'rgba(214,3,3,0.2)' }
+		});
+		
+		light.push({
+			data: s2,
+			color: '#F9BC26',
+			points: { show: true, radius: 4 },
+			lines: { show: true ,width: 1 },
+			title: 'LoRaWAN mote',
+			clickable: false,
+			hoverable: true,
+			// Modify the default hover text with replacements
+			hover: {
+				text: 'Light: <strong>{{y}}</strong><br />{{date}}',
+				before: '{{title}}<br />'
+			},
+			css: {
+			  'font-size': '0.8em',
+			  'background-color': 'white',
+			  'color': 'black',
+			  'padding': '1em',
+			  'border-radius': '0px'
+			}
+		})
+		S('#light').css({"width":"100%","height":"350px","margin-bottom":"16px"});
+		var graph2 = $.graph('light', light, {
+			xaxis: { 'label': 'Date/time', 'mode': 'time' },
+			yaxis: { 'label': 'Ambient light' },
+			zoommode: "x",
+			hoverable: true,
+			grid: { hoverable: true, clickable: true, show: false, background: 'transparent', colorZoom: 'rgba(249,188,38,0.2)' }
+		});
+
 	}
 
-	S('#temperature').css({"width":"100%","height":"350px","margin-bottom":"16px"});
-	var graph = $.graph('temperature', dataset, {
-		xaxis: { 'label': 'Date/time', 'mode': 'time' },
-		yaxis: { 'label': 'Temperature / C' },
-		zoommode: "x",
-        hoverable: true,
-		grid: { hoverable: true, clickable: true, show: false, background: 'transparent', color: 'rgba(0,0,0,1)' }
-	});
-
-	//graph.zoom(0,366,0,450);
 
 }
 
@@ -131,6 +163,12 @@ function CSV2JSON(data,format,start,end){
 		}
 	}
 	return newdata;
+}
+
+function parseHTML(txt){
+	var div = document.createElement("div");
+	div.innerHTML = txt;
+	return div.innerHTML;
 }
 
 
