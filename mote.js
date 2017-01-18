@@ -24,7 +24,7 @@ function processLoad(){
 		// Assume all the gas and electric points have the same dates for the same rows (may not be true though
 		for(var i = 0; i < data.length ; i++){
 			if(data[i].date){
-				s1.push({x:data[i].date,y:data[i].T,date:(data[i].date).toISOString()});
+				s1.push({x:data[i].date,y:data[i].T,err:0.5,date:(data[i].date).toISOString()});
 				s2.push({x:data[i].date,y:data[i].L,date:(data[i].date).toISOString()});
 			}
 		}
