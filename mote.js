@@ -189,7 +189,7 @@ S(document).ready(function(){
 	}
 
 	// Update every 10 minutes
-	var intervalID = window.setInterval(getData, 3000);
+	var intervalID = window.setInterval(getData, 600000);
 	getData();
 
 });
