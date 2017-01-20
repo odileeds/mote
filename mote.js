@@ -1,4 +1,5 @@
 var data;
+var graph,graph2;
 
 function loadData(d,attr){
 
@@ -29,70 +30,72 @@ function processLoad(){
 			}
 		}
 
-		temp.push({
-			// Data in the form [{x:x1,y:y1,err:err1},...{x:xn,y:yn,err:errn}]
-			data: s1,
-			color: '#D60303',
-			points: { show: true, radius: 4 },
-			lines: { show: false ,width: 1 },
-			title: 'LoRaWAN mote',
-			clickable: false,
-			hoverable: true,
-			// Modify the default hover text with replacements
-			hover: {
-				text: 'Temperature: <strong>{{y}}'+parseHTML('&deg;')+'C</strong><br />{{date}}',
-				before: '{{title}}<br />'
-			},
-			css: {
-			  'font-size': '0.8em',
-			  'background-color': 'white',
-			  'color': 'black',
-			  'padding': '1em',
-			  'border-radius': '0px'
-			}
-		})
-		S('#temperature').css({"width":"100%","height":"350px","margin-bottom":"16px"});
-		var graph = $.graph('temperature', temp, {
-			xaxis: { 'label': 'Date/time', 'mode': 'time' },
-			yaxis: { 'label': 'Temperature / '+parseHTML('&deg;')+'C' },
-			zoommode: "x",
-			hoverable: true,
-			grid: { hoverable: true, clickable: true, show: false, background: 'transparent', color: 'rgba(0,0,0,1)', colorZoom: 'rgba(214,3,3,0.2)' }
-		});
+		if(graph){
+			graph.updateData(data);
+			graph2.updateData(data);
+		}else{
+			temp.push({
+				// Data in the form [{x:x1,y:y1,err:err1},...{x:xn,y:yn,err:errn}]
+				data: s1,
+				color: '#D60303',
+				points: { show: true, radius: 3 },
+				lines: { show: false ,width: 1 },
+				title: 'LoRaWAN mote',
+				clickable: false,
+				hoverable: true,
+				// Modify the default hover text with replacements
+				hover: {
+					text: 'Temperature: <strong>{{y}}'+parseHTML('&deg;')+'C</strong><br />{{date}}',
+					before: '{{title}}<br />'
+				},
+				css: {
+				  'font-size': '0.8em',
+				  'background-color': 'white',
+				  'color': 'black',
+				  'padding': '1em',
+				  'border-radius': '0px'
+				}
+			})
+			S('#temperature').css({"width":"100%","height":"350px","margin-bottom":"16px"});
+			graph = $.graph('temperature', temp, {
+				xaxis: { 'label': 'Date/time', 'mode': 'time' },
+				yaxis: { 'label': 'Temperature / '+parseHTML('&deg;')+'C' },
+				zoommode: "x",
+				hoverable: true,
+				grid: { hoverable: true, clickable: true, show: false, background: 'transparent', color: 'rgba(0,0,0,1)', colorZoom: 'rgba(214,3,3,0.2)' }
+			});
 		
-		light.push({
-			data: s2,
-			color: '#F9BC26',
-			points: { show: true, radius: 4 },
-			lines: { show: true ,width: 1 },
-			title: 'LoRaWAN mote',
-			clickable: false,
-			hoverable: true,
-			// Modify the default hover text with replacements
-			hover: {
-				text: 'Light: <strong>{{y}}</strong><br />{{date}}',
-				before: '{{title}}<br />'
-			},
-			css: {
-			  'font-size': '0.8em',
-			  'background-color': 'white',
-			  'color': 'black',
-			  'padding': '1em',
-			  'border-radius': '0px'
-			}
-		})
-		S('#light').css({"width":"100%","height":"350px","margin-bottom":"16px"});
-		var graph2 = $.graph('light', light, {
-			xaxis: { 'label': 'Date/time', 'mode': 'time' },
-			yaxis: { 'label': 'Ambient light' },
-			zoommode: "x",
-			hoverable: true,
-			grid: { hoverable: true, clickable: true, show: false, background: 'transparent', colorZoom: 'rgba(249,188,38,0.2)' }
-		});
-
+			light.push({
+				data: s2,
+				color: '#F9BC26',
+				points: { show: true, radius: 3 },
+				lines: { show: false ,width: 1 },
+				title: 'LoRaWAN mote',
+				clickable: false,
+				hoverable: true,
+				// Modify the default hover text with replacements
+				hover: {
+					text: 'Light: <strong>{{y}}</strong><br />{{date}}',
+					before: '{{title}}<br />'
+				},
+				css: {
+				  'font-size': '0.8em',
+				  'background-color': 'white',
+				  'color': 'black',
+				  'padding': '1em',
+				  'border-radius': '0px'
+				}
+			})
+			S('#light').css({"width":"100%","height":"350px","margin-bottom":"16px"});
+			graph2 = $.graph('light', light, {
+				xaxis: { 'label': 'Date/time', 'mode': 'time' },
+				yaxis: { 'label': 'Ambient light' },
+				zoommode: "x",
+				hoverable: true,
+				grid: { hoverable: true, clickable: true, show: false, background: 'transparent', colorZoom: 'rgba(249,188,38,0.2)' }
+			});
+		}
 	}
-
-
 }
 
 
@@ -173,7 +176,15 @@ function parseHTML(txt){
 
 
 S(document).ready(function(){
-	S().ajax('data.csv',{'complete':loadData,'this':this,'cache':true,'error':function(e){ console.log('error',e) }});
+
+	function getData(){
+		S().ajax('data.csv',{'complete':loadData,'this':this,'cache':false,'error':function(e){ console.log('error',e) }});
+	}
+
+	// Update every 10 minutes
+	getData();
+	var intervalID = window.setInterval(getData, 600000);
+
 });
 
 
