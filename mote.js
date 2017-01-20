@@ -207,8 +207,8 @@ S(document).ready(function(){
 		S().ajax('data.csv',{'complete':loadData,'this':this,'cache':false,'error':function(e){ console.log('error',e) }});
 	}
 
-	// Update every 10 minutes
-	var intervalID = window.setInterval(getData, 600000);
+	// Update every 5 minutes
+	var intervalID = window.setInterval(getData, 300000);
 	getData();
 
 });
