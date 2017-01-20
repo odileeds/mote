@@ -101,6 +101,17 @@ function processLoad(){
 				hoverable: true,
 				grid: { hoverable: true, clickable: true, show: false, background: 'transparent', colorZoom: 'rgba(249,188,38,0.2)' }
 			});
+			// Tie the two graph's x-axes together
+			graph.bind("mouseup",{me:graph,other:graph2},function(e){
+				var g1 = e.data.me;
+				var g2 = e.data.other;
+			console.log('mouseup',g1.x,g2.x)
+				g2.defineAxis("x",g1.x.min,g1.x.max);
+				g2.calculateData();
+				g2.clear();
+				g2.draw();
+			});
+			graph.trigger("mouseup")
 		}
 	}
 }
