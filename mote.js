@@ -105,7 +105,15 @@ function processLoad(){
 			graph.bind("mouseup",{me:graph,other:graph2},function(e){
 				var g1 = e.data.me;
 				var g2 = e.data.other;
-			console.log('mouseup',g1.x,g2.x)
+				g2.defineAxis("x",g1.x.min,g1.x.max);
+				g2.calculateData();
+				g2.clear();
+				g2.draw();
+			});
+			// Tie the two graph's x-axes together
+			graph2.bind("mouseup",{me:graph2,other:graph},function(e){
+				var g1 = e.data.me;
+				var g2 = e.data.other;
 				g2.defineAxis("x",g1.x.min,g1.x.max);
 				g2.calculateData();
 				g2.clear();
