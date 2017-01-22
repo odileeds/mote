@@ -40,7 +40,7 @@ function processLoad(){
 		}
 		var dx = 900*1000;
 		var n = Math.round((data[data.length-1].date.getTime() - data[0].date.getTime())/dx);
-		var sigma2 = Math.pow(5200,2);
+		var sigma2 = Math.pow(3600,2);
 		for(var i = 0; i < n ;i++){
 			var d = new Date(Math.round(data[0].date.getTime()/dx)*dx + dx*i);
 			var v = new Array();
