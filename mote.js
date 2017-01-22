@@ -19,10 +19,15 @@ function loadData(d,attr){
 
 function processLoad(){
 
+	var G = {};
+	G.sum = function(a) { var i, sum; for (i = 0, sum = 0; i < a.length; sum += a[i++]) {}; return sum; };
+	G.mean = function(a) { return G.sum(a) / a.length; };
+	
 	if(data && data.length > 0){
 
 		var temp = [];
 		var light = [];
+		var smooth = new Array();
 		var s1 = new Array();
 		var s2 = new Array();
 
@@ -33,6 +38,28 @@ function processLoad(){
 				s2.push({x:data[i].date,y:data[i].L,date:(data[i].date).toISOString()});
 			}
 		}
+		var dx = 900*1000;
+		var n = Math.round((data[data.length-1].date.getTime() - data[0].date.getTime())/dx);
+		var sigma2 = Math.pow(5200,2);
+		for(var i = 0; i < n ;i++){
+			var d = new Date(Math.round(data[0].date.getTime()/dx)*dx + dx*i);
+			var v = new Array();
+			var weight = 0;
+			var neg = false;
+			var pos = false;
+			for(var j = 0; j < data.length; j++){
+				diff = (data[j].date - d)/1000;
+				w = Math.exp(-(diff*diff)/sigma2);
+				if(w > 0.1){
+					if(diff < 0) neg = true;
+					if(diff > 0) pos = true;
+					weight += w;
+					v.push(w * data[j].T);
+				}
+			}
+			if(v.length > 0 && neg && pos) smooth.push({x:d, y: (G.sum(v)/weight).toFixed(1), date: d.toISOString() });
+		}
+		
 		temp.push({
 			// Data in the form [{x:x1,y:y1,err:err1},...{x:xn,y:yn,err:errn}]
 			data: s1,
@@ -40,6 +67,28 @@ function processLoad(){
 			points: { show: true, radius: 3 },
 			lines: { show: false ,width: 1 },
 			title: 'LoRaWAN mote',
+			clickable: false,
+			hoverable: true,
+			// Modify the default hover text with replacements
+			hover: {
+				text: 'Temperature: <strong>{{y}}'+parseHTML('&deg;')+'C</strong><br />{{date}}',
+				before: '{{title}}<br />'
+			},
+			css: {
+			  'font-size': '0.8em',
+			  'background-color': 'white',
+			  'color': 'black',
+			  'padding': '1em',
+			  'border-radius': '0px'
+			}
+		});
+		temp.push({
+			// Data in the form [{x:x1,y:y1,err:err1},...{x:xn,y:yn,err:errn}]
+			data: smooth,
+			color: '#000000',
+			points: { show: false, radius: 3 },
+			lines: { show: true ,width: 1.5 },
+			title: 'Smoothed running average',
 			clickable: false,
 			hoverable: true,
 			// Modify the default hover text with replacements
