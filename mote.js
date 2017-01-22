@@ -88,7 +88,7 @@ function processLoad(){
 			color: '#000000',
 			points: { show: false, radius: 3 },
 			lines: { show: true ,width: 1.5 },
-			title: 'Smoothed running average',
+			title: 'Smoothed average',
 			clickable: false,
 			hoverable: true,
 			// Modify the default hover text with replacements
