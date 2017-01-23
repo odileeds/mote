@@ -64,7 +64,7 @@ function processLoad(){
 			// Data in the form [{x:x1,y:y1,err:err1},...{x:xn,y:yn,err:errn}]
 			data: s1,
 			color: '#D60303',
-			points: { show: true, radius: 3 },
+			points: { show: true, radius: 3, errors: 0.3 },
 			lines: { show: false ,width: 1 },
 			title: 'LoRaWAN mote',
 			clickable: false,
