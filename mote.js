@@ -145,7 +145,7 @@ function processLoad(){
 			S('#light').css({"width":"100%","height":"350px","margin-bottom":"16px"});
 			graph2 = $.graph('light', light, {
 				xaxis: { 'label': 'Date/time', 'mode': 'time' },
-				yaxis: { 'label': 'Ambient light' },
+				yaxis: { 'label': 'Ambient light (lx)' },
 				zoommode: "x",
 				hoverable: true,
 				grid: { hoverable: true, clickable: true, show: false, background: 'transparent', colorZoom: 'rgba(249,188,38,0.2)' }
