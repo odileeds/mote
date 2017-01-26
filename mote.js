@@ -260,6 +260,10 @@ function parseHTML(txt){
 
 S(document).ready(function(){
 
+	var spinner = '<div class="spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>';
+	S('#temperature').html(spinner);
+	S('#light').html(spinner);
+	
 	function getData(){
 		S().ajax('data.csv',{'complete':loadData,'this':this,'cache':false,'error':function(e){ console.log('error',e) }});
 	}
