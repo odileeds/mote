@@ -7,7 +7,7 @@ function loadData(d,attr){
 	d = d.replace(/[\n\r]$/,"");
 
 	data = CSV2JSON(d,[{'name':'unixdate','format':'number'},
-								{'name':'date','format':'date'},
+								/*{'name':'date','format':'date'},*/
 								{'name':'T','format':'number'},
 								{'name':'L','format':'number'}
 	]);
@@ -33,11 +33,13 @@ function processLoad(){
 
 		// Assume all the gas and electric points have the same dates for the same rows (may not be true though
 		for(var i = 0; i < data.length ; i++){
-			if(data[i].date){
-				s1.push({x:data[i].date,y:data[i].T,err:2,date:(data[i].date).toISOString()});
-				s2.push({x:data[i].date,y:data[i].L,date:(data[i].date).toISOString()});
+			if(data[i].unixdate){
+				data[i].date = new Date(data[i].unixdate*1000);
+				s1.push({x:data[i].date, y:data[i].T, err:2, date:data[i].date.toISOString()});
+				s2.push({x:data[i].date, y:data[i].L, date:data[i].date.toISOString()});
 			}
 		}
+		// Build smoothed, running, average
 		var dx = 900*1000;
 		var n = Math.round((data[data.length-1].date.getTime() - data[0].date.getTime())/dx);
 		var sigma2 = Math.pow(3600,2);
