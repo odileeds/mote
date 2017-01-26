@@ -1,19 +1,25 @@
 var data;
 var graph,graph2;
+var lastdate;
+	
+function loadDataFragment(d,attr){
+	data = data.concat(d.data);
+	console.log(d.data);
+	lastdate = data[data.length-1].unixdate;
+	processLoad();
+	return this;
+}
 
 function loadData(d,attr){
-
 	// Remove extra newlines at the end
 	d = d.replace(/[\n\r]$/,"");
-
 	data = CSV2JSON(d,[{'name':'unixdate','format':'number'},
 								/*{'name':'date','format':'date'},*/
 								{'name':'T','format':'number'},
 								{'name':'L','format':'number'}
 	]);
-
+	lastdate = data[data.length-1].unixdate;
 	processLoad();
-
 	return this;
 }
 
@@ -34,7 +40,7 @@ function processLoad(){
 		// Assume all the gas and electric points have the same dates for the same rows (may not be true though
 		for(var i = 0; i < data.length ; i++){
 			if(data[i].unixdate){
-				data[i].date = new Date(data[i].unixdate*1000);
+				if(!data[i].date) data[i].date = new Date(data[i].unixdate*1000);
 				s1.push({x:data[i].date, y:data[i].T, err:2, date:data[i].date.toISOString()});
 				s2.push({x:data[i].date, y:data[i].L, date:data[i].date.toISOString()});
 			}
@@ -257,9 +263,12 @@ S(document).ready(function(){
 	function getData(){
 		S().ajax('data.csv',{'complete':loadData,'this':this,'cache':false,'error':function(e){ console.log('error',e) }});
 	}
+	function getDataFragment(){
+		S().ajax('http://odileeds.org/projects/mote/data',{'complete':loadDataFragment,'this':this,'dataType':'jsonp','data':'since='+lastdate,'cache':false,'error':function(e){ console.log('error',e) }});
+	}
 
 	// Update every 5 minutes
-	var intervalID = window.setInterval(getData, 300000);
+	var intervalID = window.setInterval(getDataFragment, 300000);
 	getData();
 
 });
