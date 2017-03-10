@@ -80,7 +80,7 @@
 		</div>
 		<div id="location"></div>
 		<div class="holder">
-			<p>Explore readings from our LoRaWAN mote. Get <a href="https://github.com/odileeds/mote/blob/master/data.csv">the raw data as CSV</a>.</p>
+			<p>As part of <a href="https://www.thethingsnetwork.org/community/leeds-bradford/">Things Leeds &amp; Bradford</a>, we've recently installed a LoRaWAN gateway at <a href="/">ODI Leeds</a>. As an end-to-end test of an <em>Internet of Things</em> device - from sensor to data visualisation - we purchased a <a href="http://uk.farnell.com/microchip/dm164138/eval-brd-rn2483-class-a-lorawan/dp/2499797">Microchip Mote from Leeds-based Farnell</a>. The mote is powered by two AAA batteries. It sits in our space providing regular temperature and light readings via <a href="http://thethingsnetwork.org/">The Things Network</a> to a NodeRed instance (hosted by York-based <a href="https://www.bytemark.co.uk/">Bytemark</a>) where we process it and make the last 1000 readins available via this page and the full data set as <a href="https://github.com/odileeds/mote/blob/master/data-full.csv">raw CSV on Github</a>.</p>
 			<figure>
 				<div id="temperature"></div>
 				<figcaption>Temperature readings</figcaption>
@@ -89,6 +89,8 @@
 				<div id="light"></div>
 				<figcaption>Light readings</figcaption>
 			</figure>
+			<p>In the first test, the mote ran on the same AAA batteries for over 14 days. The interruptions (above) were due to the gateway being accidentally turned off one night, and to a software bug over a weekend. During those interruptions, the mote was still transmitting but the readings were not recorded.</p>
+			<p>The <a href="http://slowe.github.io/graph/">graphing library</a> was written by Stuart Lowe who works on data projects at ODI Leeds.</p>
 		</div>
 
 		<div style="clear:both;"></div>
